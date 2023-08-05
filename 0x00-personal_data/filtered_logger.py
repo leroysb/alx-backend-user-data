@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """ Regex-ing """
-import os
-import re
 from typing import List
 import logging
 import mysql.connector
+import os
+import re
 
 
 def filter_datum(fields: List[str], redaction: str, message: str,
@@ -64,19 +64,14 @@ def get_logger() -> logging.Logger:
 def get_db():
     """ returns a connector to the database
     """
-    username = os.getenv('PERSONAL_DATA_DB_USERNAME', 'root')
-    password = os.getenv('PERSONAL_DATA_DB_PASSWORD', '')
-    host = os.getenv('PERSONAL_DATA_DB_HOST', 'localhost')
-    db_name = os.getenv('PERSONAL_DATA_DB_NAME')
-
     try:
-        connector = mysql.connector.connect(
-            user=username,
-            password=password,
-            host=host,
-            database=db_name
+        conn = mysql.connector.connect(
+            user=os.environ.get("PERSONAL_DATA_DB_USERNAME", "root"),
+            password=os.environ.get("PERSONAL_DATA_DB_PASSWORD", ""),
+            host=os.environ.get("PERSONAL_DATA_DB_HOST", "localhost"),
+            database=os.environ.get("PERSONAL_DATA_DB_NAME")
         )
-        return connector
+        return conn
     except mysql.connector.Error as err:
         print(err)
         return None
