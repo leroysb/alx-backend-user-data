@@ -72,7 +72,12 @@ def get_db():
     }
 
     try:
-        return mysql.connector.connect(**config)
+        cnx = mysql.connector.connect(**config)
+        if cnx.is_connected():
+            return cnx
+        else:
+            print("Error: Failed to connect to the database.")
+            return None
     except mysql.connector.Error as err:
-        print(err)
+        print(f"Error connecting to the database: {err}")
         return None
