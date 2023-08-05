@@ -7,7 +7,7 @@ import logging
 import mysql.connector
 
 
-def get_db() -> mysql.connector.connection.MySQLConnection :
+def get_db() -> mysql.connector.connection.MySQLConnection:
     """ returns a connector to the database
     """
     config = {
