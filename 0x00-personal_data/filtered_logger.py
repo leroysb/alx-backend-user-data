@@ -42,14 +42,16 @@ class RedactingFormatter(logging.Formatter):
         )
 
 
-# def get_logger() -> logging.Logger:
-#     """ returns a logging.Logger object """
-#     logger = logging.getLogger('user_data')
-#     logger.setLevel(logging.INFO)
-#     logger.propagate = False
-#     handler = logging.StreamHandler()
-#     formatter = logging.Formatter(
-#         '%(asctime)s %(name)-12s %(levelname)-8s %(message)s')
-#     handler.setFormatter(formatter)
-#     logger.addHandler(handler)
-#     return logger
+PII_FIELDS = ("name", "email", "phone", "ssn", "password")
+
+
+def get_logger() -> logging.Logger:
+    """ returns a logging.Logger object """
+    logger = logging.getLogger('user_data')
+    logger.setLevel(logging.INFO)
+    logger.propagate = False
+    handler = logging.StreamHandler()
+    formatter = RedactingFormatter(fields=PII_FIELDS)
+    handler.setFormatter(formatter)
+    logger.addHandler(handler)
+    return logger
