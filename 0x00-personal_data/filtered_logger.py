@@ -71,7 +71,8 @@ def get_db() -> mysql.connector.connection.MySQLConnection:
         'database': os.getenv('PERSONAL_DATA_DB_NAME'),
     }
 
-    return cnx = mysql.connector.connect(**config)
+    cnx = mysql.connector.connect(**config)
+    return cnx
 
 
 def main():
