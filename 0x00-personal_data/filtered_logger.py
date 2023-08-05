@@ -1,13 +1,16 @@
 #!/usr/bin/env python3
 """ Regex-ing """
+import os
 import re
 from typing import List
 import logging
+import mysql.connector
 
 
 def filter_datum(fields: List[str], redaction: str, message: str,
                  separator: str) -> str:
-    """ returns the log message obfuscated """
+    """ returns the log message obfuscated
+    """
     for field in fields:
         message = re.sub(field + "=.*?" + separator,
                          field + "=" + redaction + separator, message)
@@ -46,7 +49,8 @@ PII_FIELDS = ("name", "email", "phone", "ssn", "password")
 
 
 def get_logger() -> logging.Logger:
-    """ returns a logging.Logger object """
+    """ returns a logging.Logger object
+    """
     logger = logging.getLogger('user_data')
     logger.setLevel(logging.INFO)
     logger.propagate = False
@@ -55,3 +59,25 @@ def get_logger() -> logging.Logger:
     handler.setFormatter(formatter)
     logger.addHandler(handler)
     return logger
+
+
+def get_db():
+    """ returns a connector to the database
+    """
+    username = os.getenv('PERSONAL_DATA_DB_USERNAME', 'root')
+    password = os.getenv('PERSONAL_DATA_DB_PASSWORD', '')
+    host = os.getenv('PERSONAL_DATA_DB_HOST', 'localhost')
+    db_name = os.getenv('PERSONAL_DATA_DB_NAME')
+    
+    try:
+        import mysql.connector
+        connector = mysql.connector.connect(
+            user=username,
+            password=password,
+            host=host,
+            database=db_name
+        )
+        return connector
+    except mysql.connector.Error as err:
+        print(err)
+        return None
