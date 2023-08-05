@@ -72,4 +72,8 @@ def get_db():
     }
 
     cnx = mysql.connector.connect(**config)
-    return cnx
+    if cnx.is_connected():
+        return cnx
+    else:
+        print("Error connecting to database")
+        return None
