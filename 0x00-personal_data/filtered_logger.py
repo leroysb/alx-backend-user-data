@@ -71,13 +71,5 @@ def get_db():
         'database': os.getenv('PERSONAL_DATA_DB_NAME'),
     }
 
-    try:
-        cnx = mysql.connector.connect(**config)
-        if cnx.is_connected():
-            return cnx
-        else:
-            print("Error: Failed to connect to the database.")
-            return None
-    except mysql.connector.Error as err:
-        print(f"Error connecting to the database: {err}")
-        return None
+    cnx = mysql.connector.connect(**config)
+    return cnx
