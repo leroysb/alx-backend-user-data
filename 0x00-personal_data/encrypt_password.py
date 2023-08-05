@@ -7,7 +7,8 @@ import bcrypt
 def hash_password(password: str) -> bytes:
     """ Encrypts a password
     """
-    return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+    hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+    return hashed_password
 
 
 def is_valid(hash_password: bytes, password: str) -> bool:
