@@ -25,7 +25,8 @@ class Auth():
             return False
         # `*` at the end of a path means that it's a prefix
         for excluded_path in excluded_paths:
-            if excluded_path[-1] == '*' and path.startswith(excluded_path[:-1]):
+            if excluded_path[-1] == '*' and \
+             path.startswith(excluded_path[:-1]):
                 return False
         return True
 
