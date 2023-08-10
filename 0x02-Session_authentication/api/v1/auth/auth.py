@@ -41,6 +41,21 @@ class Auth():
     def current_user(self, request=None) -> TypeVar('User'):
         """ Current user
         """
+        # if request is None:
+        #     return None
+        # # Get the session ID from the cookie
+        # session_id = self.session_cookie(request)
+        # if session_id is None:
+        #     return None
+
+        # # Get the user ID associated with the session ID
+        # user_id = self.user_id_for_session_id(session_id)
+        # if user_id is None:
+        #     return None
+
+        # # Retrieve the User object based on the user ID
+        # user = User.get(user_id)
+        # return user
         return None
 
     def session_cookie(self, request=None):
@@ -48,4 +63,5 @@ class Auth():
         """
         if request is None:
             return None
+        # return request.cookies.get('my_session_id')
         return request.cookies.get(getenv('SESSION_NAME'))
