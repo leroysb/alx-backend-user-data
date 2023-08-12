@@ -8,7 +8,7 @@ from os import getenv
 
 
 @app_views.route('auth_session/login', methods=['POST'],
-                strict_slashes=False)
+                 strict_slashes=False)
 def login() -> str:
     """ POST /api/v1/auth_session/login
     Return:
@@ -34,8 +34,9 @@ def login() -> str:
         return response
     return jsonify({"error": "wrong password"}), 401
 
+
 @app_views.route('auth_session/logout', methods=['DELETE'],
-                    strict_slashes=False)
+                 strict_slashes=False)
 def logout() -> str:
     """ DELETE /api/v1/auth_session/logout
     Return:
