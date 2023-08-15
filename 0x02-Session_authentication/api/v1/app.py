@@ -22,6 +22,9 @@ if auth_type == 'session_auth':
 elif auth_type == 'basic_auth':
     from api.v1.auth.basic_auth import BasicAuth
     auth = BasicAuth()
+elif auth_type == 'session_exp_auth':
+    from api.v1.auth.session_exp_auth import SessionExpAuth
+    auth = SessionExpAuth()
 elif auth_type == 'auth':
     from api.v1.auth.auth import Auth
     auth = Auth()
@@ -40,21 +43,21 @@ def require_auth() -> str:
                       '/api/v1/auth_session/login/']
     #
     if request.path not in excluded_paths:
-        if not auth.require_auth(request.path, excluded_paths):
-            return
-        if not auth.authorization_header(request):
-            abort(401)
-        if not auth.current_user(request):
-            abort(403)
-        if not auth.session_cookie(request):
-            abort(401)
-        request.current_user = auth.current_user(request)
-        if request.current_user is None \
-                and auth.require_auth(request.path, excluded_paths):
-            abort(403)
-        if not auth.authorization_header(request) \
-                and not auth.session_cookie(request):
-            abort(401)
+        if auth.require_auth(request.path, excluded_paths):
+            if not auth.authorization_header(request) \
+                    and not auth.session_cookie(request):
+                abort(401)
+            #
+            if not auth.current_user(request):
+                abort(403)
+            #
+            if not auth.session_cookie(request):
+                abort(401)
+            #
+            request.current_user = auth.current_user(request)
+            if not request.current_user \
+                    and auth.require_auth(request.path, excluded_paths):
+                abort(403)
 
 
 @app.errorhandler(401)
