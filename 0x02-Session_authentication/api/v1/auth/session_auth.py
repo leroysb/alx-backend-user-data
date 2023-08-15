@@ -9,7 +9,7 @@ from uuid import uuid4
 class SessionAuth(Auth):
     """ Session Authentication class
     """
-    user_id_by_session_id = {}
+    user_id_by_session_id: dict = {}
 
     def create_session(self, user_id: str = None) -> str:
         """ creates a Session ID for a user_id

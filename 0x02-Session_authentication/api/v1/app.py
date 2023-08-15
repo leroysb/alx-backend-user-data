@@ -16,23 +16,23 @@ CORS(app, resources={r"/api/v1/*": {"origins": "*"}})
 auth = None
 auth_type = getenv("AUTH_TYPE", "auth")
 
-if auth_type == 'auth':
-    from api.v1.auth.auth import Auth
-    auth = Auth()
-if auth_type == 'basic_auth':
-    from api.v1.auth.basic_auth import BasicAuth
-    auth = BasicAuth()
 if auth_type == 'session_auth':
     from api.v1.auth.session_auth import SessionAuth
     auth = SessionAuth()
+elif auth_type == 'basic_auth':
+    from api.v1.auth.basic_auth import BasicAuth
+    auth = BasicAuth()
+elif auth_type == 'auth':
+    from api.v1.auth.auth import Auth
+    auth = Auth()
 
 
 @app.before_request
-def require_path() -> str:
+def require_auth() -> str:
     """ Before request handler
     """
     if auth is None:
-        return
+        return None
     #
     excluded_paths = ['/api/v1/status/',
                       '/api/v1/unauthorized/',
@@ -42,14 +42,19 @@ def require_path() -> str:
     if request.path not in excluded_paths:
         if not auth.require_auth(request.path, excluded_paths):
             return
-        if auth.authorization_header(request) is None:
+        if not auth.authorization_header(request):
             abort(401)
-        if auth.current_user(request) is None:
+        if not auth.current_user(request):
             abort(403)
+        if not auth.session_cookie(request):
+            abort(401)
         request.current_user = auth.current_user(request)
-        if request.current_user is None and auth.require_auth(request.path,
-                                                              excluded_paths):  # noqa
+        if request.current_user is None \
+                and auth.require_auth(request.path, excluded_paths):
             abort(403)
+        if not auth.authorization_header(request) \
+                and not auth.session_cookie(request):
+            abort(401)
 
 
 @app.errorhandler(401)
