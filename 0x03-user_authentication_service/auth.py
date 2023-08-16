@@ -51,3 +51,35 @@ class Auth:
             return session_id
         else:
             return None
+
+    def get_user_from_session_id(self, session_id: str) -> str:
+        """ get user from session id """
+        if session_id:
+            user = self._db.find_user_by(session_id=session_id)
+            if user:
+                return user
+        return None
+
+    def destroy_session(self, user_id: int) -> None:
+        """ destroy session """
+        self._db.update_user(user_id, session_id=None)
+
+    def get_reset_password_token(self, email: str) -> str:
+        """ reset password """
+        user = self._db.find_user_by(email=email)
+        if user:
+            reset_token = _generate_uuid()
+            self._db.update_user(user.id, reset_token=reset_token)
+            return reset_token
+        else:
+            raise ValueError
+
+    def update_password(self, reset_token: str, password: str) -> None:
+        """ update password """
+        user = self._db.find_user_by(reset_token=reset_token)
+        if user:
+            self._db.update_user(user.id,
+                                 hashed_password=_hash_password(password),
+                                 reset_token=None)
+        else:
+            raise ValueError
