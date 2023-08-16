@@ -58,11 +58,11 @@ class Auth:
     def get_user_from_session_id(self, session_id: str) -> Union[User, None]:
         """ get user from session id
         """
-        if not session_id:
-            return None
-        user = self._db.find_user_by(session_id=session_id)
-        if user:
-            return user
+        if session_id:
+            user = self._db.find_user_by(session_id=session_id)
+            if user:
+                return user
+        return None
 
     def destroy_session(self, user_id: int) -> None:
         """ destroy session """
