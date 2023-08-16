@@ -4,6 +4,7 @@ import bcrypt
 from db import DB
 from user import User
 import uuid
+from typing import Union
 
 
 def _hash_password(password: str) -> bytes:
@@ -54,7 +55,7 @@ class Auth:
         else:
             return None
 
-    def get_user_from_session_id(self, session_id: str) -> str:
+    def get_user_from_session_id(self, session_id: str) -> Union[User, None]:
         """ get user from session id """
         if session_id:
             user = self._db.find_user_by(session_id=session_id)
