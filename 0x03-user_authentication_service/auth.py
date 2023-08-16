@@ -37,6 +37,17 @@ class Auth:
         """ valid login """
         user = self._db.find_user_by(email=email)
         if user:
-            return bcrypt.checkpw(password.encode('utf-8'), user.hashed_password)
+            return bcrypt.checkpw(password.encode('utf-8'),
+                                  user.hashed_password)
         else:
             return False
+
+    def create_session(self, email: str) -> str:
+        """ create session """
+        user = self._db.find_user_by(email=email)
+        if user:
+            session_id = _generate_uuid()
+            self._db.update_user(user.id, session_id=session_id)
+            return session_id
+        else:
+            return None
