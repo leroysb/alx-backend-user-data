@@ -4,6 +4,7 @@ import requests
 
 BASE_URL = "http://localhost:5000"
 
+
 def register_user(email: str, password: str) -> None:
     """
     Register a user with the provided email and password.
@@ -12,7 +13,8 @@ def register_user(email: str, password: str) -> None:
         email (str): Email of the user.
         password (str): Password of the user.
     """
-    response = requests.post(f"{BASE_URL}/users", data={"email": email, "password": password})
+    response = requests.post(f"{BASE_URL}/users",
+                             data={"email": email, "password": password})
     assert response.status_code == 200
     print("User registered successfully")
 
@@ -25,7 +27,8 @@ def log_in_wrong_password(email: str, password: str) -> None:
         email (str): Email of the user.
         password (str): Incorrect password.
     """
-    response = requests.post(f"{BASE_URL}/sessions", data={"email": email, "password": password})
+    response = requests.post(f"{BASE_URL}/sessions",
+                             data={"email": email, "password": password})
     assert response.status_code == 401
     print("Failed to log in with wrong password")
 
@@ -41,7 +44,8 @@ def log_in(email: str, password: str) -> str:
     Returns:
         str: Session ID of the logged-in user.
     """
-    response = requests.post(f"{BASE_URL}/sessions", data={"email": email, "password": password})
+    response = requests.post(f"{BASE_URL}/sessions",
+                             data={"email": email, "password": password})
     assert response.status_code == 200
     session_id = response.cookies.get("session_id")
     print("Logged in successfully")
@@ -94,7 +98,8 @@ def reset_password_token(email: str) -> str:
     Returns:
         str: Reset password token.
     """
-    response = requests.post(f"{BASE_URL}/reset_password", data={"email": email})
+    response = requests.post(f"{BASE_URL}/reset_password",
+                             data={"email": email})
     assert response.status_code == 200
     data = response.json()
     print(f"Reset password token: {data['reset_token']}")
@@ -110,7 +115,11 @@ def update_password(email: str, reset_token: str, new_password: str) -> None:
         reset_token (str): Reset password token.
         new_password (str): New password to set.
     """
-    data = {"email": email, "reset_token": reset_token, "new_password": new_password}
+    data = {
+        "email": email,
+        "reset_token": reset_token,
+        "new_password": new_password
+    }
     response = requests.put(f"{BASE_URL}/reset_password", data=data)
     assert response.status_code == 200
     print("Password updated successfully")
