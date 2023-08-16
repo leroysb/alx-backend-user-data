@@ -6,10 +6,16 @@ from api.v1.auth.session_auth import SessionAuth
 
 
 class SessionExpAuth(SessionAuth):
+    """ SessionExpAuth class
+    """
     def __init__(self):
+        """ Constructor
+        """
         self.session_duration = int(getenv("SESSION_DURATION", 0))
 
     def create_session(self, user_id=None):
+        """ Create a session
+        """
         session_id = super().create_session(user_id)
         if session_id is None:
             return None
@@ -19,6 +25,8 @@ class SessionExpAuth(SessionAuth):
         return session_id
 
     def user_id_for_session_id(self, session_id=None):
+        """ Return user_id from session_id
+        """
         if session_id is None:
             return None
         #
