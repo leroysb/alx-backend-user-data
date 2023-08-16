@@ -53,11 +53,15 @@ class DB:
             User: the user found
         """
         try:
-            return self._session.query(User).filter_by(**kwargs).first()
-        except NoResultFound as not_found_error:
-            raise not_found_error
-        except InvalidRequestError as invalid_request_error:
-            raise invalid_request_error
+            user = self._session.query(User).filter_by(**kwargs).first()
+            #
+            if user is None:
+                raise NoResultFound
+            return user
+        except NoResultFound:
+            raise NoResultFound
+        except InvalidRequestError:
+            raise InvalidRequestError
 
     def update_user(self, user_id: int, **kwargs) -> None:
         """Updates a user in the database
