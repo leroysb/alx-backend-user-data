@@ -57,4 +57,3 @@ class DB:
             raise not_found_error
         except InvalidRequestError as invalid_request_error:
             raise invalid_request_error
-
