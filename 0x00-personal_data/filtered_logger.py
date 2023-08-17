@@ -11,10 +11,8 @@ def filter_datum(fields: List[str], redaction: str, message: str,
                  separator: str) -> str:
     """ returns the log message obfuscated
     """
-    for field in fields:
-        message = re.sub(field + "=.*?" + separator,
-                         field + "=" + redaction + separator, message)
-    return message
+    return re.sub(fr'(?<={separator})({"|".join(fields)})=.*?{separator}',
+                  rf'\1={redaction}{separator}', message)
 
 
 class RedactingFormatter(logging.Formatter):
@@ -90,11 +88,15 @@ def main():
 
     logger = get_logger()
     for user in users:
-        log_message = "; ".join(f"{field}={value}" for field, value in zip(cursor.column_names, user))
+        log_message = "; ".join(
+            f"{field}={value}"
+            for field, value in zip(cursor.column_names, user)
+            )
         logger.info(log_message)
 
     cursor.close()
     conn.close()
+
 
 if __name__ == "__main__":
     main()
