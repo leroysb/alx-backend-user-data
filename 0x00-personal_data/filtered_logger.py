@@ -77,12 +77,12 @@ def main():
     """ obtains a database connection using get_db and retrieves all rows
         in the users table and display each row under a filtered format
     """
-    conn = get_db()
-    if not conn:
+    cnx = get_db()
+    if not cnx:
         print("Error: Unable to connect to the database.")
         return
 
-    cursor = conn.cursor()
+    cursor = cnx.cursor()
     cursor.execute("SELECT * FROM users")
     users = cursor.fetchall()
 
@@ -95,7 +95,7 @@ def main():
         logger.info(log_message)
 
     cursor.close()
-    conn.close()
+    cnx.close()
 
 
 if __name__ == "__main__":
